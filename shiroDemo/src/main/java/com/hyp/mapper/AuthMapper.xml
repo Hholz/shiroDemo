@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hyp.mapper.AuthMapper" >
+  <resultMap id="BaseResultMap" type="com.hyp.popj.Auth" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="auth_name" property="authName" jdbcType="VARCHAR" />
+    <result column="describe" property="describe" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, auth_name, describe
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from auth
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from auth
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hyp.popj.Auth" >
+    insert into auth (id, auth_name, describe
+      )
+    values (#{id,jdbcType=INTEGER}, #{authName,jdbcType=VARCHAR}, #{describe,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hyp.popj.Auth" >
+    insert into auth
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="authName != null" >
+        auth_name,
+      </if>
+      <if test="describe != null" >
+        describe,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="authName != null" >
+        #{authName,jdbcType=VARCHAR},
+      </if>
+      <if test="describe != null" >
+        #{describe,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hyp.popj.Auth" >
+    update auth
+    <set >
+      <if test="authName != null" >
+        auth_name = #{authName,jdbcType=VARCHAR},
+      </if>
+      <if test="describe != null" >
+        describe = #{describe,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hyp.popj.Auth" >
+    update auth
+    set auth_name = #{authName,jdbcType=VARCHAR},
+      describe = #{describe,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

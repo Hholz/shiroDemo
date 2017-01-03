@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hyp.mapper.UsersMapper" >
+  <resultMap id="BaseResultMap" type="com.hyp.popj.Users" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, username, password
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from users
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from users
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hyp.popj.Users" >
+    insert into users (id, username, password
+      )
+    values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hyp.popj.Users" >
+    insert into users
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="username != null" >
+        username,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hyp.popj.Users" >
+    update users
+    <set >
+      <if test="username != null" >
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hyp.popj.Users" >
+    update users
+    set username = #{username,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <resultMap type="com.hyp.popj.Users" id="UserWithRoleRM" extends="BaseResultMap">
+	<collection property="roleList" ofType="com.hyp.popj.Role">
+		<id column="r_id" property="id" jdbcType="INTEGER" />
+		<result column="role_name" property="roleName" jdbcType="VARCHAR" />
+		<result column="r_describe" property="describe" jdbcType="VARCHAR" />
+		<collection property="authList" ofType="com.hyp.popj.Auth">
+		    <id column="a_id" property="id" jdbcType="INTEGER" />
+		    <result column="auth_name" property="authName" jdbcType="VARCHAR" />
+		    <result column="a_describe" property="describe" jdbcType="VARCHAR" />
+		</collection>
+	</collection>
+  </resultMap>
+  <select id="selectUserById" resultMap="UserWithRoleRM" parameterType="java.lang.Integer" >
+    SELECT u.id,u.username,u.password,
+	r.id AS r_id,r.role_name,r.describe AS r_describe,
+	a.id AS a_id,a.auth_name,a.describe AS a_describe
+ 
+ 	FROM users u,role r,user_role ur,auth a,role_auth ra 
+ 	
+	WHERE u.id = ur.user_id AND ur.role_id = r.id 
+	AND r.id = ra.role_id AND ra.auth_id = a.id
+	
+	AND u.id = #{id}
+  </select>
+  <select id="selectUserByUser" resultMap="UserWithRoleRM" parameterType="com.hyp.popj.Users" >
+   	SELECT u.id,u.username,u.password,
+	r.id AS r_id,r.role_name,r.describe AS r_describe,
+	a.id AS a_id,a.auth_name,a.describe AS a_describe
+ 
+ 	FROM users u,role r,user_role ur,auth a,role_auth ra 
+ 	
+	WHERE u.id = ur.user_id AND ur.role_id = r.id 
+	AND r.id = ra.role_id AND ra.auth_id = a.id
+	
+	AND u.username = #{username} 
+  </select>
+</mapper>

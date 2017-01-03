@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="   
+           http://www.springframework.org/schema/beans   
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd   
+           http://www.springframework.org/schema/context   
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd  
+           http://www.springframework.org/schema/mvc   
+           http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+
+	<!-- 对于注解的Handler可以单个配置 在实际开发中建议使用扫描组件 -->
+	<!--<bean class="com.ht.controller.TestUserController3"></bean> -->
+
+	<!-- 可以扫描 controller、 service等.... 这里想设置扫描controller 指定controller的包 -->
+	<context:component-scan base-package="com.hyp.controller"></context:component-scan>
+
+	<!-- mvc注解驱动器 ：使用mvc:annotation-driven可以代替上面2个注解映射器、映射器的配置 mvc注解驱动器会 默认加载很多参数的绑定方法，比如json的转换，默认加载json解析器 
+		实际开发使用mvc注解驱动器 -->
+	<mvc:annotation-driven />
+
+	<!-- 视图解析器 解析jsp视图，默认使用jstl,所以 classpath:下面要有jstl包 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+
+	<!-- 对静态资源不拦截 -->
+	<mvc:annotation-driven />
+	<mvc:resources location="/image/" mapping="/image/**" />
+	<mvc:resources location="/css/" mapping="/css/**" />
+	<mvc:resources location="/js/" mapping="/js/**" />
+	
+	<!-- 上传图片 -->
+	<bean id="multipartResolver"  class="org.springframework.web.multipart.commons.CommonsMultipartResolver">   
+	     <property name="maxUploadSize" value="10000000" /><!-- 10M -->  
+	</bean>
+	
+	<!-- 默认访问跳转到登录页面(即定义无需Controller的url<->view直接映射) -->  
+    <mvc:view-controller path="/" view-name="forward:/login.jsp"/>
+</beans> 
+           
